@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <>
-      <PageTitle title='Home | Explore our blog app' />
+      
       <div className='min-h-screen bg-background text-foreground'>
         {/* Navbar */}
         <nav className='fixed top-0 w-full backdrop-blur-md bg-muted/70 border-b border-border px-6 py-4 flex justify-between items-center'>

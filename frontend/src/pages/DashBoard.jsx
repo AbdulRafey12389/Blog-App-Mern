@@ -42,6 +42,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <PageTitle title='Dashboard | Manage your data' />
       <div className='p-6 bg-background text-foreground mt-12'>
         {/* Header */}
         <div className='mb-6 flex md:flex-row flex-col items-center justify-between rounded-md border-b border-border px-6 py-4'>

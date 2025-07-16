@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 
 // LUCIDE REACT ICONS
 import { Bookmark, Heart, Edit, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function BlogDetail() {
   return (
     <>
+      <PageTitle title='Blogs | Explore the blogs ' />
       <div className='mx-auto p-6 mb-10 mt-12'>
         {/* Header with author info */}
         <div className='w-full h-[400px] rounded-lg'>
