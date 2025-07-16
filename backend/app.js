@@ -12,46 +12,51 @@ const app = express();
 dotenv.config();
 
 // CUSTOM VARIABLES...
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
 
 // MIDDLEWARES...
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
 app.get('/', (req, res) => {
   res.send('working');
 });
 
+app.use('/api/v1', v1Routes);
+
 // SERVER LISTENING HERE with eife...
-(async () => {
-  try {
-    await connectToDatabase(process.env.MONGODB_URI);
+// (async () => {
+//   try {
+//     await connectToDatabase(process.env.MONGODB_URI);
 
-    app.use('/api/v1', v1Routes); // SERVER LISTENING HERE with eife...
+//     app.use('/api/v1', v1Routes); // SERVER LISTENING HERE with eife...
 
-    app.listen(PORT, () => {
-      console.log(`Server running: http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.log(`Faild to start the se ${error}`);
-  }
-})();
+//     app.listen(PORT, () => {
+//       console.log(`Server running: http://localhost:${PORT}`);
+//     });
+//   } catch (error) {
+//     console.log(`Faild to start the se ${error}`);
+//   }
+// })();
 
 // HANDLE SHUTDOW SERVER OR DISCONNECTING DATABASE...
-const handleServerShutdown = async () => {
-  try {
-    await disconnectFromDatabase();
+// const handleServerShutdown = async () => {
+//   try {
 
-    console.warn('Server SHUTDOWN');
+//     console.warn('Server SHUTDOWN');
 
-    process.exit(0);
-  } catch (error) {
-    console.error('Error during server  shutdown', error);
-  }
-};
+//     process.exit(0);
+//   } catch (error) {
+//     console.error('Error during server  shutdown', error);
+//   }
+// };
 
-// LISTENS FOR TERMINATION SIGNALS (`SIGNTERM` AND `SIGINT`).
-process.on('SIGTERM', handleServerShutdown);
-process.on('SIGINT', handleServerShutdown);
+const PORT = process.env.PORT || 5000;
+const server = app.listen(PORT, async () => {
+  console.log(`Server listening on port http://localhost:${PORT}`);
+
+  await connectToDatabase(process.env.MONGODB_URI);
+});
+
+server.on('close', async () => await disconnectFromDatabase());
