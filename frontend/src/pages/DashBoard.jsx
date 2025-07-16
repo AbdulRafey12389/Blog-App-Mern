@@ -31,6 +31,7 @@ import {
 
 // CUSTOM COMPONENTS...
 import { BlogCard } from '@/components/BLogCard';
+import PageTitle from '@/components/PageTitle';
 
 export default function Dashboard() {
   // const stats = [

@@ -1,5 +1,6 @@
 // CUSTOM MODULES...
 import { BlogCard } from '@/components/BLogCard';
+import PageTitle from '@/components/PageTitle';
 
 // SHADCN UI
 import { Button } from '@/components/ui/button';

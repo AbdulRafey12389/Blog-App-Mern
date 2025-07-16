@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Upload, Trash2 } from 'lucide-react';
+import PageTitle from '@/components/PageTitle';
 
 export default function Setting() {
   return (

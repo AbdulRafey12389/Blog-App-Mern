@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { UploadCloud } from 'lucide-react';
+import PageTitle from '@/components/PageTitle';
 
 export default function CreateBlog() {
   const [isPublic, setIsPublic] = useState(true);

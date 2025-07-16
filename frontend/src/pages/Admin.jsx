@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 
+// CUSTOM MODULES...
+import PageTitle from '@/components/PageTitle';
+
 export default function Admin() {
   return (
     <>
