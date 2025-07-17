@@ -16,6 +16,10 @@ import VerifyEmail from '@/pages/VerifyEmail';
 import BlogDetail from '@/pages/BlogDetails';
 import Admin from '@/pages/Admin';
 
+// SIGN UP FUNCTIONS...
+import sigupActionFucntion from './signUpActions/signupAction';
+import signInAction from './signUpActions/signinActionFunction';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -48,10 +52,12 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <SignUp />,
+    action: sigupActionFucntion,
   },
   {
     path: '/signin',
     element: <SignIn />,
+    action: signInAction,
   },
 
   {

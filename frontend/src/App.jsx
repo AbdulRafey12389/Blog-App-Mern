@@ -12,19 +12,35 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // ICONS
-import { LogOut, LayoutDashboard, User, Pencil } from 'lucide-react';
+import {
+  LogOut,
+  LayoutDashboard,
+  User,
+  Pencil,
+  LogIn,
+  UserCog2,
+} from 'lucide-react';
 import Footer from './components/Footer';
 
 // CUSTOM COMPONENTS...
 import PageTitle from './components/PageTitle';
+import { isTokenValid } from './utils/checkToken';
 
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const token = isTokenValid();
+
+  console.log(token);
+
+  const handleLogut = async () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/signin');
+  };
 
   return (
     <>
-      
       <div className='min-h-screen bg-background text-foreground'>
         {/* Navbar */}
         <nav className='fixed top-0 w-full backdrop-blur-md bg-muted/70 border-b border-border px-6 py-4 flex justify-between items-center'>
@@ -42,46 +58,62 @@ export default function App() {
               Blogify
             </div>
           </div>
-
           {/* Right - Avatar Dropdown */}
-          <div className='flex items-center gap-6'>
-            {location.pathname !== '/createblog' && (
+          {token === true ? (
+            <div className='flex items-center gap-6'>
+              {location.pathname !== '/createblog' && (
+                <Button
+                  className='rounded-2xl'
+                  onClick={() => navigate('/createblog')}
+                >
+                  <Pencil /> Write
+                </Button>
+              )}
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className='cursor-pointer'>
+                    <AvatarImage
+                      src='https://github.com/shadcn.png'
+                      alt='User'
+                    />
+                    <AvatarFallback>AB</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-48 mt-2 mr-12'>
+                  <Link to={'/dashboard'}>
+                    <DropdownMenuItem>
+                      <LayoutDashboard className='mr-2 h-4 w-4 text-primary' />{' '}
+                      Dashboard
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to={'/setting'}>
+                    <DropdownMenuItem>
+                      <User className='mr-2 h-4 w-4 text-primary' /> Profile
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem onClick={handleLogut}>
+                    <LogOut className='mr-2 h-4 w-4 text-red-600' /> Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ) : (
+            <div className='flex gap-4'>
               <Button
                 className='rounded-2xl'
-                onClick={() => navigate('/createblog')}
+                onClick={() => navigate('/signin')}
               >
-                <Pencil /> Write
+                <LogIn /> Sign In
               </Button>
-            )}
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className='cursor-pointer'>
-                  <AvatarImage
-                    src='https://github.com/shadcn.png'
-                    alt='User'
-                  />
-                  <AvatarFallback>AB</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-48 mt-2 mr-12'>
-                <Link to={'/dashboard'}>
-                  <DropdownMenuItem>
-                    <LayoutDashboard className='mr-2 h-4 w-4 text-primary' />{' '}
-                    Dashboard
-                  </DropdownMenuItem>
-                </Link>
-                <Link to={'/setting'}>
-                  <DropdownMenuItem>
-                    <User className='mr-2 h-4 w-4 text-primary' /> Profile
-                  </DropdownMenuItem>
-                </Link>
-                <DropdownMenuItem>
-                  <LogOut className='mr-2 h-4 w-4 text-red-600' /> Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+              <Button
+                className='rounded-2xl'
+                onClick={() => navigate('/signup')}
+              >
+                <UserCog2 /> Sign Up
+              </Button>
+            </div>
+          )}
         </nav>
 
         {/* Main Content */}

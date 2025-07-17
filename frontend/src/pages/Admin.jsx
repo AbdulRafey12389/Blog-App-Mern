@@ -20,15 +20,23 @@ import { Button } from '@/components/ui/button';
 
 // CUSTOM MODULES...
 import PageTitle from '@/components/PageTitle';
+import { useNavigate } from 'react-router-dom';
 
 export default function Admin() {
+  const navigate = useNavigate();
+
+  const handleLogut = async () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/signin');
+  };
   return (
     <>
       <PageTitle title='Admin | manage Your platform' />
       <div className='p-6 bg-background text-foreground mt-12 mb-10'>
         <div className='flex items-center justify-between'>
           <h1 className='text-3xl font-bold mb-6'>Admin Dashboard</h1>
-          <Button>Sign out</Button>
+          <Button onClick={handleLogut}>Sign out</Button>
         </div>
 
         {/* Summary Boxes */}

@@ -1,5 +1,6 @@
 // NODE MODULES
-import { Link } from 'react-router-dom';
+import { Form, Link, useActionData, useNavigation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 // SHADCN UI IMPORTS
 import {
@@ -22,8 +23,29 @@ import {
 
 // CUSTOM COMPONENTS...
 import PageTitle from '@/components/PageTitle';
+import { LoaderCircle } from 'lucide-react';
+
+// TOSTER TO USE...
+import { toast } from 'sonner';
 
 export default function SignUp() {
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (actionData) {
+      setError(actionData);
+    }
+  }, [actionData]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      setError(null);
+    }
+  }, [error]);
+
   return (
     <>
       <PageTitle title='Sign up | Create your account' />
@@ -62,16 +84,24 @@ export default function SignUp() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className='space-y-4'>
+              <Form
+                className='space-y-4'
+                action='/signup'
+                method='POST'
+              >
                 <div>
                   <Label htmlFor='name'>Name</Label>
-                  <Input id='name' />
+                  <Input
+                    id='name'
+                    name='name'
+                  />
                 </div>
                 <div>
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
                     type='email'
+                    name='email'
                   />
                 </div>
                 <div>
@@ -79,6 +109,7 @@ export default function SignUp() {
                   <Input
                     id='password'
                     type='password'
+                    name='password'
                   />
                 </div>
                 <div>
@@ -86,19 +117,8 @@ export default function SignUp() {
                   <Input
                     id='confirmPassword'
                     type='password'
+                    name='confirmPassword'
                   />
-                </div>
-                <div>
-                  <Label htmlFor='role'>Role</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select role' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='user'>User</SelectItem>
-                      <SelectItem value='admin'>Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 <div>
@@ -113,10 +133,15 @@ export default function SignUp() {
                 <Button
                   type='submit'
                   className='w-full'
+                  disabled={navigation.state !== 'idle'}
                 >
-                  Sign Up
+                  {navigation.state !== 'idle' ? (
+                    <LoaderCircle className='white h-24 w-24 animate-spin' />
+                  ) : (
+                    'Sign Up'
+                  )}
                 </Button>
-              </form>
+              </Form>
             </CardContent>
           </Card>
         </div>

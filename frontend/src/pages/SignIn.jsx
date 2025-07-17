@@ -1,5 +1,5 @@
 // NODE MODULES
-import { Link } from 'react-router-dom';
+import { Form, Link, useActionData, useNavigation } from 'react-router-dom';
 
 // SHADCN UI IMPORTS
 import {
@@ -22,8 +22,29 @@ import {
 
 // CUSTOM COMPONENTS...
 import PageTitle from '@/components/PageTitle';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { LoaderCircle } from 'lucide-react';
 
 export default function SignIn() {
+  const actionData = useActionData();
+  const [role, setRole] = useState('');
+  const navigation = useNavigation();
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (actionData) {
+      setError(actionData);
+    }
+  }, [actionData]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      setError(null);
+    }
+  }, [error]);
+
   return (
     <>
       <PageTitle title='Sign in | Sign in to your account' />
@@ -60,12 +81,17 @@ export default function SignIn() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className='space-y-4'>
+              <Form
+                className='space-y-4'
+                action='/signin'
+                method='POST'
+              >
                 <div>
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
                     type='email'
+                    name='email'
                   />
                 </div>
                 <div>
@@ -73,11 +99,15 @@ export default function SignIn() {
                   <Input
                     id='password'
                     type='password'
+                    name='password'
                   />
                 </div>
                 <div>
                   <Label htmlFor='role'>Role</Label>
-                  <Select>
+                  <Select
+                    value={role}
+                    onValueChange={setRole}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder='Select role' />
                     </SelectTrigger>
@@ -86,6 +116,11 @@ export default function SignIn() {
                       <SelectItem value='admin'>Admin</SelectItem>
                     </SelectContent>
                   </Select>
+                  <Input
+                    type='hidden'
+                    name='role'
+                    value={role}
+                  />
                 </div>
 
                 <div>
@@ -101,9 +136,13 @@ export default function SignIn() {
                   type='submit'
                   className='w-full'
                 >
-                  Sign In
+                  {navigation.state !== 'idle' ? (
+                    <LoaderCircle className='white h-24 w-24 animate-spin' />
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
-              </form>
+              </Form>
             </CardContent>
           </Card>
         </div>
