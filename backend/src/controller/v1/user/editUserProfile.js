@@ -23,16 +23,17 @@ const editUserProfile = async (req, res) => {
     if (username) user.username = username;
     if (bio) user.bio = bio;
 
+    if (req.file) {
+      user.profilePic = req.file.path; // Cloudinary secure URL
+    }
+
     if (oldPassword && newPassword) {
       const isMatch = await bcrypt.compare(oldPassword, user.password);
       if (!isMatch)
-        return res.status(400).json({ message: 'New passwords do not match' });
+        return res.status(400).json({ message: 'Old password is incorrect' });
 
-      const salt = await bcrypt.genSalt(10);
-      const hashedNewPassword = await bcrypt.hash(newPassword, salt);
-    //   user.password = hashedNewPassword;
+      user.password = newPassword;
     }
-    //   if (req.body.profilePic) user.profilePic = req.body.profilePic;
 
     const updatedUser = await user.save();
 
@@ -41,6 +42,7 @@ const editUserProfile = async (req, res) => {
       user: {
         id: updatedUser._id,
         username: updatedUser.username,
+        profilePic: updatedUser.profilePic,
         name: updatedUser.name,
         email: updatedUser.email,
         role: updatedUser.role,

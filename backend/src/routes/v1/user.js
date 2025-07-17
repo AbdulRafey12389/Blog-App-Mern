@@ -6,6 +6,8 @@ import editUserProfile from '../../controller/v1/user/editUserProfile.js';
 import auth from '../../middlewares/auth.middleware.js';
 import authorizeRole from '../../middlewares/admin.middleware.js'; // optional role check
 
+import upload from '../../middlewares/multer.milddleware.js';
+
 const router = express.Router();
 
 // GET /api/users - Admin only
@@ -15,6 +17,6 @@ router.get('/', auth, authorizeRole('admin'), getAllUsers);
 router.get('/:id', auth, authorizeRole('admin'), getUserById);
 
 // PUT /api/users/:id - Only owner can update
-router.put('/:id', auth, editUserProfile);
+router.put('/:id', auth, upload.single('profilePic'), editUserProfile);
 
 export default router;
