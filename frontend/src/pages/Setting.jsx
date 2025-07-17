@@ -33,27 +33,19 @@ export default function Setting() {
               </div>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              <div>
-                <Label htmlFor='name'>Full name</Label>
-                <Input
-                  id='name'
-                  defaultValue='abdul rafey'
-                />
-              </div>
-              <div>
-                <Label htmlFor='username'>Username</Label>
-                <Input
-                  id='username'
-                  defaultValue='abdulrafey-1752610191527'
-                />
-              </div>
+            <div className=''>
+              <Label htmlFor='name'>Full name</Label>
+              <Input
+                id='name'
+                defaultValue='abdul rafey'
+                className='w-full'
+              />
             </div>
             <div>
-              <Label htmlFor='email'>Email address</Label>
+              <Label htmlFor='username'>Username</Label>
               <Input
-                id='email'
-                defaultValue='abdulrafey12389@gmail.com'
+                id='username'
+                defaultValue='abdulrafey-1752610191527'
               />
             </div>
             <div>

@@ -3,7 +3,10 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 // 🔐 Static list of approved admin emails
-const adminEmails = ['abdulrafey12389@gmail.com', 'codewithrafey12389@gmail.com'];
+const adminEmails = [
+  'abdulrafey12389@gmail.com',
+  'codewithrafey12389@gmail.com',
+];
 
 const login = async (req, res) => {
   const { email, password, role } = req.body;
@@ -27,6 +30,10 @@ const login = async (req, res) => {
         .status(403)
         .json({ message: 'This email is not allowed to loggedIn as admin' });
     }
+
+    if (role) user.role = role;
+    
+    await user.save();
 
     // 4. Generate token
     const token = jwt.sign(
