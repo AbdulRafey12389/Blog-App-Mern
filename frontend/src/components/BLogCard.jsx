@@ -10,16 +10,24 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Bookmark, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import formatCreatedAt from '@/utils/generateDate';
+import calculateReadTime from '@/utils/ganerateReadTime';
 
 export function BlogCard({
   imgSrc,
   title,
   author,
-  date,
-  readTime,
   reactions,
   bookmarks,
+  blogId,
+  profilePic,
+  createdAt,
+  content,
 }) {
+  const formattedDate = formatCreatedAt(createdAt);
+
+  const readTime = calculateReadTime(content);
+
   return (
     <>
       <Card
@@ -30,7 +38,7 @@ export function BlogCard({
             <img
               src={imgSrc}
               alt=''
-              className='w-full h-full rounded-md'
+              className='w-full h-full object-cover rounded-md'
             />
           </div>
         )}
@@ -38,13 +46,20 @@ export function BlogCard({
         <CardHeader className='md:flex-row justify-between items-center'>
           <div className='flex items-center gap-3'>
             <Avatar>
-              <AvatarImage src={imgSrc} />
-              <AvatarFallback>{author.charAt(0)}</AvatarFallback>
+              {profilePic ? (
+                <AvatarImage src={profilePic} />
+              ) : (
+                <AvatarFallback className='capitalize'>
+                  {author.charAt(0)}
+                </AvatarFallback>
+              )}
             </Avatar>
             <div>
-              <p className='text-md text-start font-semibold'>{author}</p>
+              <p className='text-md text-start font-semibold capitalize'>
+                {author}
+              </p>
               <p className='text-sm font-medium text-muted-foreground'>
-                {date}
+                {formattedDate}
               </p>
             </div>
           </div>
@@ -81,7 +96,7 @@ export function BlogCard({
           </div>
         </CardFooter>
         <Link
-          to='/blogs/122'
+          to={`/blogs/${blogId}`}
           className='absolute inset-0'
         ></Link>
       </Card>

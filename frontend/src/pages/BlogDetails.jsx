@@ -1,5 +1,7 @@
 // CUSTOM MODULES...
+import { deleteBlog } from '@/api/blog';
 import { BlogCard } from '@/components/BLogCard';
+import DeleteBlogDialog from '@/components/DeleteBlogDialog';
 import PageTitle from '@/components/PageTitle';
 
 // SHADCN UI
@@ -7,9 +9,36 @@ import { Button } from '@/components/ui/button';
 
 // LUCIDE REACT ICONS
 import { Bookmark, Heart, Edit, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useLoaderData, useNavigate, useRevalidator } from 'react-router-dom';
 
 export default function BlogDetail() {
+  const { blog, authorBlogs } = useLoaderData();
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const navigate = useNavigate();
+  const [isloading, setIsloading] = useState(false);
+  const { revalidate } = useRevalidator();
+
+  const isOwner = currentUser?.id === blog?.author;
+
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleDelete = async (blogId) => {
+    try {
+      setIsloading(true);
+      await deleteBlog(blogId);
+      setDialogOpen(false);
+      setIsloading(false);
+      revalidate();
+      navigate('/');
+      // optionally refresh blogs list
+    } catch (error) {
+      console.error(error);
+      setIsloading(false);
+    }
+  };
+
   return (
     <>
       <PageTitle title='Blogs | Explore the blogs ' />
@@ -17,8 +46,8 @@ export default function BlogDetail() {
         {/* Header with author info */}
         <div className='w-full h-[400px] rounded-lg'>
           <img
-            src='https://images.pexels.com/photos/32437900/pexels-photo-32437900.jpeg'
-            alt=''
+            src={blog?.coverImage}
+            alt={blog?.title}
             className='w-full h-full object-cover rounded-lg'
           />
         </div>
@@ -27,32 +56,45 @@ export default function BlogDetail() {
         <div className='prose prose-invert max-w-none mb-8 flex items-center justify-between'>
           <div>
             <h1 className='text-4xl mt-4 ml-2 font-bold text-primary mb-4 capitalize'>
-              nice
+              {blog?.title}
             </h1>
-            <p className='text-lg mb-6 ml-2 font-semibold '>hello</p>
+            <p className='text-lg mb-6 ml-2 font-semibold '>{blog?.content}</p>
           </div>
 
           {/* Edit/Delete buttons (for author) */}
-          <div>
-            <div className='flex gap-2'>
-              <Button
-                variant='outline'
-                size='sm'
-                className='gap-1'
-              >
-                <Edit className='h-4 w-4' />
-                Edit
-              </Button>
-              <Button
-                variant='destructive'
-                size='sm'
-                className='gap-1'
-              >
-                <Trash2 className='h-4 w-4' />
-                Delete
-              </Button>
+          {isOwner && (
+            <div>
+              <div className='flex gap-2'>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='gap-1'
+                >
+                  <Edit className='h-4 w-4' />
+                  Edit
+                </Button>
+                <Button
+                  variant='destructive'
+                  size='sm'
+                  className='gap-1'
+                  onClick={() => {
+                    setSelectedBlog(blog);
+                    setDialogOpen(true);
+                  }}
+                >
+                  <Trash2 className='h-4 w-4' />
+                  Delete
+                </Button>
+                <DeleteBlogDialog
+                  open={dialogOpen}
+                  onOpenChange={setDialogOpen}
+                  blog={selectedBlog}
+                  onConfirm={handleDelete}
+                  isloading={isloading}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Footer with actions */}
@@ -83,24 +125,25 @@ export default function BlogDetail() {
             Reading next
           </h2>
           <div className='w-full grid gap-6 px-4 grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))]'>
-            <BlogCard
-              title='JET LI'
-              subtitle='LEAGUE OF GODS'
-              author='Emily'
-              date='May 26, 25'
-              readTime='2 min read'
-              reactions={2}
-              bookmarks={2}
-            />
-            <BlogCard
-              title='JET LI'
-              subtitle='LEAGUE OF GODS'
-              author='Emily'
-              date='May 26, 25'
-              readTime='2 min read'
-              reactions={2}
-              bookmarks={2}
-            />
+            {authorBlogs.map(
+              ({
+                title,
+                content,
+                author: { name, profilePic },
+                createdAt,
+                _id,
+              }) => (
+                <BlogCard
+                  key={_id}
+                  title={title}
+                  blogId={_id}
+                  author={name}
+                  profilePic={profilePic}
+                  createdAt={createdAt}
+                  content={content}
+                />
+              ),
+            )}
           </div>
         </div>
       </div>

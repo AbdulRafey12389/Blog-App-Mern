@@ -26,16 +26,18 @@ import Footer from './components/Footer';
 import PageTitle from './components/PageTitle';
 import { isTokenValid } from './utils/checkToken';
 
+import { useLoaderData } from 'react-router-dom';
+
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = isTokenValid();
 
-  console.log(token);
+  const loaderData = useLoaderData();
 
   const handleLogut = async () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
     navigate('/signin');
   };
 
@@ -43,7 +45,7 @@ export default function App() {
     <>
       <div className='min-h-screen bg-background text-foreground'>
         {/* Navbar */}
-        <nav className='fixed top-0 w-full backdrop-blur-md bg-muted/70 border-b border-border px-6 py-4 flex justify-between items-center'>
+        <nav className='fixed top-0 w-full backdrop-blur-md bg-muted/70 border-b border-border px-6 py-4 flex justify-between items-center z-40'>
           <div className='flex items-center gap-2'>
             <div className='w-[50px] h-[50px] rounded-md'>
               <Link to='/'>
@@ -118,7 +120,7 @@ export default function App() {
 
         {/* Main Content */}
         <main className='px-6 py-10 space-y-8'>
-          <Outlet />
+          <Outlet context={{ publicBlogs: loaderData }} />
         </main>
 
         {/* FOOTER */}

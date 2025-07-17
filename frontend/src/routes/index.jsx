@@ -20,10 +20,15 @@ import Admin from '@/pages/Admin';
 import sigupActionFucntion from './signUpActions/signupAction';
 import signInAction from './signUpActions/signinActionFunction';
 
+// LOADER FUNCTION...
+import getBlogByIdLoaderFunction from './blogLoader/getBlogById';
+import getAllPbulicBlogLoaderFunction from './blogLoader/getAllPublicBlogsLoader';
+
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    loader: getAllPbulicBlogLoaderFunction,
 
     children: [
       {
@@ -46,6 +51,7 @@ const router = createBrowserRouter([
       {
         path: '/blogs/:blogId',
         element: <BlogDetail />,
+        loader: getBlogByIdLoaderFunction,
       },
     ],
   },

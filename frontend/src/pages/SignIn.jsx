@@ -135,6 +135,7 @@ export default function SignIn() {
                 <Button
                   type='submit'
                   className='w-full'
+                  disabled={navigation.state !== 'idle'}
                 >
                   {navigation.state !== 'idle' ? (
                     <LoaderCircle className='white h-24 w-24 animate-spin' />
