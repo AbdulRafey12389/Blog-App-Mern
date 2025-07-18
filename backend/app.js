@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, async () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 
-  await connectToDatabase(process.env.MONGODB_URI);
+  await connectToDatabase();
 });
 
 server.on('close', async () => await disconnectFromDatabase());
