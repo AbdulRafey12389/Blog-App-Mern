@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGODB_URI = `mongodb+srv://abdulrafey12389:w6vIMu0XUeNduZgH@cluster0.ibstpp5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // Global cache to persist connection across serverless function calls
 if (!global._mongoose) {
