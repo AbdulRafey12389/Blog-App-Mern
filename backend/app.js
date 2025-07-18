@@ -25,11 +25,10 @@ app.get('/', (req, res) => {
 
 //Allow all requests from all domains & localhost
 
-app.use('/api/v1', v1Routes);
-
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, async () => {
   await connectToDatabase();
+  app.use('/api/v1', v1Routes);
   console.log(`Server listening on port http://localhost:${PORT}`);
 });
 
