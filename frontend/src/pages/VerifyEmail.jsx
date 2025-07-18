@@ -14,13 +14,13 @@ import { useState } from 'react';
 
 import { verifyEmailRequest } from '@/api/auth';
 import { toast } from 'sonner';
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { LoaderCircleIcon } from 'lucide-react';
 
 export default function VerifyEmail() {
   const [otp, setOtp] = useState('');
   const navigate = useNavigate();
   const [completed, setCompleted] = useState(true);
-  const navigation = useNavigation();
 
   const handleOnComplete = async () => {
     setCompleted(false);
@@ -96,11 +96,7 @@ export default function VerifyEmail() {
               className='w-full'
               onClick={handleOnSubmit}
             >
-              {navigation.state !== 'idle' ? (
-                <LoaderCircle className='white h-24 w-24 animate-spin' />
-              ) : (
-                'Verify Email'
-              )}
+              Verify Email
             </Button>
           </CardContent>
         </Card>
