@@ -19,16 +19,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+(async () => {
+  await connectToDatabase();
+})();
 app.get('/', (req, res) => {
   res.send('working');
 });
+app.use('/api/v1', v1Routes);
 
 //Allow all requests from all domains & localhost
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, async () => {
-  await connectToDatabase();
-  app.use('/api/v1', v1Routes);
   console.log(`Server listening on port http://localhost:${PORT}`);
 });
 
