@@ -1,5 +1,12 @@
 PORT=5000
-MONGODB_URI=mongodb+srv://abdulrafey12389:C75UFm1jAnY1ADCZ@cluster0.qhee9ds.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+MONGODB_URI=mongodb+srv://abdulrafey12389:w6vIMu0XUeNduZgH@cluster0.ibstpp5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
 JWT_SECRET=5e7d129e3aee490ae9cc24a5
+
 EMAIL_PASS=htec eipy fmxt camc
 EMAIL_USER=abdulrafey12389@gmail.com
+
+CLOUDINARY_CLOUD_NAME=dmbh958bo
+CLOUDINARY_API_KEY=895438643294134
+CLOUDINARY_API_SECRET=98DT-LH7z4mZAz-6Oybd0tzY5BQ
