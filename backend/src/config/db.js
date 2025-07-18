@@ -5,11 +5,8 @@ import mongoose from 'mongoose';
 const clientOption = {
   dbName: 'blog-db-mern',
   appName: 'Blog APP MERN',
-  serverApi: {
-    version: '1',
-    strict: true,
-    deprecationErrors: true,
-  },
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 };
 
 // ESTABLISHES A CONNECTION TO THE MONGOdB DATABASE TO THE MONGOOSE...
