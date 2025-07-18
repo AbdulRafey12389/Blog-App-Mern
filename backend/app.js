@@ -29,8 +29,8 @@ app.use('/api/v1', v1Routes);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, async () => {
-  await connectToDatabase();
   console.log(`Server listening on port http://localhost:${PORT}`);
+  await connectToDatabase();
 });
 
 server.on('close', async () => await disconnectFromDatabase());
