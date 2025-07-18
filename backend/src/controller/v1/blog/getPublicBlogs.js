@@ -2,7 +2,7 @@ import { connectToDatabase } from '../../../config/db.js';
 import Blog from '../../../models/blog.model.js';
 
 const getPublicBlogs = async (req, res) => {
-  await connectToDatabase();
+  // await connectToDatabase();
   try {
     const blogs = await Blog.find({ isPublic: true }).populate({
       path: 'author',
