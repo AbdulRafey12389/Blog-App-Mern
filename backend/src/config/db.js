@@ -3,10 +3,8 @@ import mongoose from 'mongoose';
 
 // CLIENT OPTIONS...
 const clientOption = {
-  dbName: 'blog-db-mern',
-  appName: 'Blog APP MERN',
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  dbName: 'blog-db-mern-production',
+  appName: 'Blog APP MERN production',
 };
 
 // ESTABLISHES A CONNECTION TO THE MONGOdB DATABASE TO THE MONGOOSE...
