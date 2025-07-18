@@ -25,7 +25,8 @@ export const connectToDatabase = async () => {
       appName: 'Blog APP MERN',
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 20000,
+      serverSelectionTimeoutMS: 30000,
+      connectTimeoutMS: 30000,
     });
   }
 
