@@ -1,5 +1,6 @@
 // CUSTOM MODULES...
-import { deleteBlog } from '@/api/blog';
+import { deleteBlog, likesBlogs } from '@/api/blog';
+import { bookMarksBlogs, getUserById } from '@/api/user';
 import { BlogCard } from '@/components/BLogCard';
 import DeleteBlogDialog from '@/components/DeleteBlogDialog';
 import PageTitle from '@/components/PageTitle';
@@ -8,9 +9,15 @@ import PageTitle from '@/components/PageTitle';
 import { Button } from '@/components/ui/button';
 
 // LUCIDE REACT ICONS
-import { Bookmark, Heart, Edit, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { useLoaderData, useNavigate, useRevalidator } from 'react-router-dom';
+import { Bookmark, Heart, Edit, Trash2, LoaderCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+} from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function BlogDetail() {
   const { blog, authorBlogs } = useLoaderData();
@@ -18,7 +25,12 @@ export default function BlogDetail() {
   const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
   const { revalidate } = useRevalidator();
+  const [isLikedLoading, setIsLikedLoading] = useState(false);
+  const [isbookMarkLoading, setIsbookMarkLoading] = useState(false);
+  const [isBookMarked, setIsBookMarked] = useState(null);
 
+  const isLiked = blog?.likes?.includes(currentUser?.id);
+  // const isBookMark = blog?.likes?.includes(currentUser?.id);
   const isOwner = currentUser?.id === blog?.author;
 
   const [selectedBlog, setSelectedBlog] = useState(null);
@@ -36,6 +48,44 @@ export default function BlogDetail() {
     } catch (error) {
       console.error(error);
       setIsloading(false);
+    }
+  };
+
+  const handleLikes = async () => {
+    try {
+      setIsLikedLoading(true);
+      const res = await likesBlogs(blog._id);
+      revalidate();
+      setIsLikedLoading(false);
+      toast.success(res.message);
+    } catch (error) {
+      setIsLikedLoading(false);
+      toast.error(error.message);
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const res = await getUserById(currentUser?.id);
+      let isBookMarked = res.bookmarks.includes(blog._id);
+      setIsBookMarked(isBookMarked);
+      console.log(isBookMarked);
+    })();
+  }, [currentUser, blog._id]);
+
+  const handleBookMarks = async () => {
+    try {
+      setIsbookMarkLoading(true);
+      const res = await bookMarksBlogs(blog._id);
+
+      revalidate();
+      setIsbookMarkLoading(false);
+      toast.success(res.message);
+    } catch (error) {
+      setIsbookMarkLoading(false);
+      toast.error(error.message);
+      console.error(error);
     }
   };
 
@@ -65,14 +115,19 @@ export default function BlogDetail() {
           {isOwner && (
             <div>
               <div className='flex gap-2'>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='gap-1'
+                <Link
+                  to={`/edit/${blog._id}`}
+                  state={{ blog }}
                 >
-                  <Edit className='h-4 w-4' />
-                  Edit
-                </Button>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='gap-1'
+                  >
+                    <Edit className='h-4 w-4' />
+                    Edit
+                  </Button>
+                </Link>
                 <Button
                   variant='destructive'
                   size='sm'
@@ -104,17 +159,39 @@ export default function BlogDetail() {
               variant='ghost'
               size='sm'
               className='gap-1'
+              onClick={handleLikes}
+              disabled={isLikedLoading}
             >
-              <Heart className='h-4 w-4' />
-              <span>0 Reactions</span>
+              <Heart
+                className={`h-4 w-4 `}
+                fill={`${isLiked ? '#f27931' : ''}`}
+              />
+              <span className='flex items-center gap-2'>
+                {blog?.likesCount}{' '}
+                {isLikedLoading ? (
+                  <LoaderCircle className='animate-spin' />
+                ) : (
+                  'Reactions'
+                )}
+              </span>
             </Button>
             <Button
               variant='ghost'
               size='sm'
               className='gap-1'
+              onClick={handleBookMarks}
             >
-              <Bookmark className='h-4 w-4' />
-              <span>0 Bookmarks</span>
+              <Bookmark
+                className='h-4 w-4'
+                fill={`${isBookMarked ? '#f27931' : ''}`}
+              />
+              <span className='flex items-center gap-2'>
+                {isbookMarkLoading ? (
+                  <LoaderCircle className='animate-spin' />
+                ) : (
+                  'Bookmark'
+                )}
+              </span>
             </Button>
           </div>
         </div>
@@ -125,25 +202,31 @@ export default function BlogDetail() {
             Reading next
           </h2>
           <div className='w-full grid gap-6 px-4 grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))]'>
-            {authorBlogs.map(
-              ({
-                title,
-                content,
-                author: { name, profilePic },
-                createdAt,
-                _id,
-              }) => (
-                <BlogCard
-                  key={_id}
-                  title={title}
-                  blogId={_id}
-                  author={name}
-                  profilePic={profilePic}
-                  createdAt={createdAt}
-                  content={content}
-                />
-              ),
-            )}
+            {authorBlogs &&
+              authorBlogs.map(
+                ({
+                  title,
+                  content,
+                  author,
+                  createdAt,
+                  _id,
+                  likes,
+                  likesCount,
+                }) => (
+                  <BlogCard
+                    key={_id}
+                    title={title}
+                    blogId={_id}
+                    author={author?.name}
+                    profilePic={author?.profilePic}
+                    createdAt={createdAt}
+                    content={content}
+                    likes={likes}
+                    reactions={likesCount}
+                    bookmarks={author?.bookmarks}
+                  />
+                ),
+              )}
           </div>
         </div>
       </div>

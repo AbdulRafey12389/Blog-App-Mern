@@ -12,7 +12,7 @@ const blogSchema = new mongoose.Schema(
     },
     coverImage: {
       type: String,
-      required: true
+      required: true,
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,13 +23,11 @@ const blogSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
     likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
-    bookmarks: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

@@ -18,6 +18,7 @@ export function BlogCard({
   title,
   author,
   reactions,
+  likes,
   bookmarks,
   blogId,
   profilePic,
@@ -27,6 +28,10 @@ export function BlogCard({
   const formattedDate = formatCreatedAt(createdAt);
 
   const readTime = calculateReadTime(content);
+
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const isLiked = likes?.includes(currentUser?.id);
+  const isBookMarked = bookmarks?.includes(blogId);
 
   return (
     <>
@@ -50,7 +55,7 @@ export function BlogCard({
                 <AvatarImage src={profilePic} />
               ) : (
                 <AvatarFallback className='capitalize'>
-                  {author.charAt(0)}
+                  {author?.charAt(0)}
                 </AvatarFallback>
               )}
             </Avatar>
@@ -82,7 +87,10 @@ export function BlogCard({
               size='lg'
               className='gap-1 w-8 h-8 rounded-full'
             >
-              <Heart className='h-4 w-4' />
+              <Heart
+                className='h-4 w-4'
+                fill={`${isLiked ? '#f27931' : ''}`}
+              />
               <span>{reactions}</span>
             </Button>
             <Button
@@ -90,8 +98,11 @@ export function BlogCard({
               size='lg'
               className='gap-1  w-8 h-8 rounded-full'
             >
-              <Bookmark className='h-4 w-4' />
-              <span>{bookmarks}</span>
+              <Bookmark
+                className='h-4 w-4'
+                fill={`${isBookMarked ? '#f27931' : ''}`}
+              />
+              {/* <span>{bookmarks}</span> */}
             </Button>
           </div>
         </CardFooter>

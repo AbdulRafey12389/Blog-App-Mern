@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { verifyEmailRequest } from '@/api/auth';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { LoaderCircleIcon } from 'lucide-react';
+
 
 export default function VerifyEmail() {
   const [otp, setOtp] = useState('');
@@ -32,8 +32,6 @@ export default function VerifyEmail() {
         email: localStorage.getItem('verify_email'),
         otp,
       });
-
-      console.log(response);
 
       if (response.success === false) {
         toast.error(response.error);

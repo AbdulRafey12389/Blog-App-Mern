@@ -25,6 +25,7 @@ import {
   Pencil,
   LogIn,
   UserCog2,
+  BookMarked,
 } from 'lucide-react';
 import Footer from './components/Footer';
 
@@ -40,6 +41,7 @@ export default function App() {
   const navigation = useNavigation();
   const location = useLocation();
   const token = isTokenValid();
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   const loaderData = useLoaderData();
 
@@ -86,11 +88,16 @@ export default function App() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className='cursor-pointer'>
-                      <AvatarImage
-                        src='https://github.com/shadcn.png'
-                        alt='User'
-                      />
-                      <AvatarFallback>AB</AvatarFallback>
+                      {currentUser?.profilePic ? (
+                        <AvatarImage
+                          src='https://github.com/shadcn.png'
+                          alt='User'
+                        />
+                      ) : (
+                        <AvatarFallback className='capitalize'>
+                          {currentUser.name?.charAt(0)}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className='w-48 mt-2 mr-12'>
@@ -103,6 +110,12 @@ export default function App() {
                     <Link to={'/setting'}>
                       <DropdownMenuItem>
                         <User className='mr-2 h-4 w-4 text-primary' /> Profile
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link to={'/bookmarks'}>
+                      <DropdownMenuItem>
+                        <BookMarked className='mr-2 h-4 w-4 text-primary' />{' '}
+                        BookMarks
                       </DropdownMenuItem>
                     </Link>
                     <DropdownMenuItem onClick={handleLogut}>

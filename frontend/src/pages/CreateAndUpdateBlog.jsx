@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,10 +8,10 @@ import { Switch } from '@/components/ui/switch';
 import { LoaderCircle, Trash2, UploadCloud } from 'lucide-react';
 import PageTitle from '@/components/PageTitle';
 import { toast } from 'sonner';
-import { createBlog } from '@/api/blog';
-import { useNavigate, useRevalidator } from 'react-router-dom';
+import { createBlog, updateBlog } from '@/api/blog';
+import { useNavigate, useRevalidator, useLocation } from 'react-router-dom';
 
-export default function CreateBlog() {
+export default function CreateAndUpdateBlog() {
   const [isPublic, setIsPublic] = useState(true);
   const refInputImage = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -21,6 +21,28 @@ export default function CreateBlog() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const { revalidate } = useRevalidator();
+  const { state, pathname } = useLocation();
+  const isEditPage = pathname.startsWith('/edit');
+
+  useEffect(() => {
+    if (isEditPage && state?.blog) {
+      const blog = state.blog;
+      setTitle(blog.title || '');
+      setContent(blog.content || '');
+      setIsPublic(blog.isPublic ?? true);
+      setSelectedImage(blog.coverImage || null);
+      setPreviewURL(blog.coverImage || null);
+    } else {
+      // Clear all fields if not on edit page or no blog in state
+      setTitle('');
+      setContent('');
+      setIsPublic(true);
+      setSelectedImage(null);
+      setPreviewURL(null);
+    }
+  }, [state, pathname, isEditPage]);
+
+  console.log(state);
 
   const handleOnClick = () => {
     if (refInputImage.current) {
@@ -42,9 +64,7 @@ export default function CreateBlog() {
     setSelectedImage(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     setIsloading(true);
 
     if (!selectedImage) {
@@ -69,7 +89,7 @@ export default function CreateBlog() {
 
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('isPublic', isPublic ? 'true' : 'false'); // convert boolean to string
+    formData.append('isPublic', isPublic);
     formData.append('coverImage', selectedImage); // assuming backend expects 'image'
 
     try {
@@ -84,11 +104,53 @@ export default function CreateBlog() {
     }
   };
 
+  const handleEditButton = async () => {
+    setIsloading(true);
+
+    if (!selectedImage) {
+      toast.error('Cover Image is required');
+      setIsloading(false);
+      return;
+    }
+
+    if (!title.trim()) {
+      toast.error('Title is required.');
+      setIsloading(false);
+      return;
+    }
+
+    if (!content.trim()) {
+      toast.error('Content is required.');
+      setIsloading(false);
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('isPublic', isPublic); // convert boolean to string
+    formData.append('coverImage', selectedImage); // assuming backend expects 'image'
+
+    try {
+      const res = await updateBlog(state.blog._id, formData);
+      revalidate();
+      navigate(`/blogs/${res.blog._id}`);
+      setIsloading(false);
+    } catch (error) {
+      toast.error(error.message);
+      console.error('Upload failed:', error);
+      setIsloading(false);
+    }
+  };
+
   return (
     <>
       <PageTitle title='Create - Blog | Create your onw blog to see people' />
       <div className='p-6 bg-background text-foreground mt-14 mb-12 flex items-start flex-col'>
-        <h1 className='text-3xl font-bold mb-6 w-[63%] mx-auto'>Create Blog</h1>
+        <h1 className='text-3xl font-bold mb-6 w-[63%] mx-auto'>
+          {state?.blog ? 'Update' : 'Create'} Blog
+        </h1>
         <div className='w-full'>
           <Card className='max-w-4xl mx-auto'>
             <CardHeader>
@@ -166,11 +228,13 @@ export default function CreateBlog() {
                   />
                 </div>
                 <Button
-                  onClick={handleSubmit}
+                  onClick={state?.blog ? handleEditButton : handleSubmit}
                   disabled={isloading}
                 >
                   {isloading ? (
                     <LoaderCircle className='animate-spin' />
+                  ) : isEditPage ? (
+                    'Update'
                   ) : (
                     'Publish'
                   )}

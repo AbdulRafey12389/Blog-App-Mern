@@ -11,10 +11,11 @@ import SignIn from '@/pages/SignIn';
 import Dashboard from '@/pages/DashBoard';
 import Setting from '@/pages/Setting';
 import Home from '@/pages/Home';
-import CreateBlog from '@/pages/CreateBlog';
+import CreateAndUpdateBlog from '@/pages/CreateAndUpdateBlog';
 import VerifyEmail from '@/pages/VerifyEmail';
 import BlogDetail from '@/pages/BlogDetails';
 import Admin from '@/pages/Admin';
+import BookMarks from '@/pages/BookMarks';
 
 // SIGN UP FUNCTIONS...
 import sigupActionFucntion from './signUpActions/signupAction';
@@ -23,6 +24,8 @@ import signInAction from './signUpActions/signinActionFunction';
 // LOADER FUNCTION...
 import getBlogByIdLoaderFunction from './blogLoader/getBlogById';
 import getAllPbulicBlogLoaderFunction from './blogLoader/getAllPublicBlogsLoader';
+import getBookMarksLoaderFunction from './userLoader/getBookMarksLoader';
+import getUserStatsLoaderFunction from './userLoader/getUserStatsLoader';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +42,7 @@ const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: <Dashboard />,
+        loader: getUserStatsLoaderFunction,
       },
       {
         path: '/setting',
@@ -46,12 +50,21 @@ const router = createBrowserRouter([
       },
       {
         path: '/createblog',
-        element: <CreateBlog />,
+        element: <CreateAndUpdateBlog />,
+      },
+      {
+        path: '/edit/:blogId',
+        element: <CreateAndUpdateBlog />,
       },
       {
         path: '/blogs/:blogId',
         element: <BlogDetail />,
         loader: getBlogByIdLoaderFunction,
+      },
+      {
+        path: '/bookmarks',
+        element: <BookMarks />,
+        loader: getBookMarksLoaderFunction,
       },
     ],
   },

@@ -26,9 +26,23 @@ export const getPublicBlogs = async () => {
 };
 
 export const updateBlog = async (blogId, updatedData) => {
-  const response = await axiosInstance.put(`/blogs/${blogId}`, updatedData);
+  const response = await axiosInstance.put(
+    `/blogs/edit/${blogId}`,
+    updatedData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data', // ✅ Let the browser set it
+      },
+    },
+  );
   return response.data;
 };
+
+export const likesBlogs = async (blogId) => {
+  const response = await axiosInstance.put(`blogs/likes/${blogId}`);
+  return response.data;
+};
+
 
 export const deleteBlog = async (blogId) => {
   const response = await axiosInstance.delete(`blogs/delete/${blogId}`);

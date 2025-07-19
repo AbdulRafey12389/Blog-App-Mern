@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 // CUSTOM COMPONENTS...
-import { BlogCard } from '@/components/BLogCard';
+// import { BlogCard } from '@/components/BLogCard';
 import PageTitle from '@/components/PageTitle';
 
 export default function Dashboard() {
@@ -124,7 +124,7 @@ export default function Dashboard() {
 
         {/* Blog Cards */}
         <div className='w-full grid gap-6 px-4 grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))]'>
-          <BlogCard
+          {/* <BlogCard
             title='JET LI'
             subtitle='LEAGUE OF GODS'
             author='Emily'
@@ -132,8 +132,8 @@ export default function Dashboard() {
             readTime='2 min read'
             reactions={2}
             bookmarks={2}
-          />
-          <BlogCard
+          /> */}
+          {/* <BlogCard
             title='JET LI'
             subtitle='LEAGUE OF GODS'
             author='Emily'
@@ -141,7 +141,7 @@ export default function Dashboard() {
             readTime='2 min read'
             reactions={2}
             bookmarks={2}
-          />
+          /> */}
         </div>
       </div>
     </>
