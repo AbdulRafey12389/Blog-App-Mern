@@ -32,7 +32,7 @@ const login = async (req, res) => {
     }
 
     if (role) user.role = role;
-    
+
     await user.save();
 
     // 4. Generate token
@@ -52,6 +52,8 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
+        bio: user.bio,
         email: user.email,
         role: user.role,
         profilePic: user.profilePic,

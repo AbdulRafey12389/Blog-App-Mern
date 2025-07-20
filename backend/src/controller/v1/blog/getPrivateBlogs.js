@@ -8,9 +8,15 @@ const getPrivateBlogs = async (req, res) => {
     let blogs;
 
     if (userRole === 'admin') {
-      blogs = await Blog.find({ isPublic: false });
+      blogs = await Blog.find({ isPublic: false }).populate(
+        'author',
+        'name profilePic bookmarks',
+      );
     } else {
-      blogs = await Blog.find({ isPublic: false, author: userId });
+      blogs = await Blog.find({ isPublic: false, author: userId }).populate(
+        'author',
+        'name profilePic bookmarks',
+      );
     }
 
     if (!blogs) {

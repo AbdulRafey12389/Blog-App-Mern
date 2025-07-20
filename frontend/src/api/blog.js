@@ -21,7 +21,12 @@ export const getBlogsByAuthor = async (authorId) => {
 };
 
 export const getPublicBlogs = async () => {
-  const response = await axiosInstance.get('/blogs/public');
+  const response = await axiosInstance.get('blogs/public');
+  return response.data;
+};
+
+export const getPrivateBlogs = async () => {
+  const response = await axiosInstance.get('blogs/private');
   return response.data;
 };
 
@@ -42,7 +47,6 @@ export const likesBlogs = async (blogId) => {
   const response = await axiosInstance.put(`blogs/likes/${blogId}`);
   return response.data;
 };
-
 
 export const deleteBlog = async (blogId) => {
   const response = await axiosInstance.delete(`blogs/delete/${blogId}`);

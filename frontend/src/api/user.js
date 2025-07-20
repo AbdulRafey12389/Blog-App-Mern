@@ -19,3 +19,12 @@ export const getUserStats = async () => {
   const response = await axiosInstance.get(`users/stats`);
   return response.data;
 };
+
+export const editUserProfile = async (userId, userData) => {
+  const response = await axiosInstance.put(`users/edit/${userId}`, userData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};

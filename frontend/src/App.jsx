@@ -90,7 +90,7 @@ export default function App() {
                     <Avatar className='cursor-pointer'>
                       {currentUser?.profilePic ? (
                         <AvatarImage
-                          src='https://github.com/shadcn.png'
+                          src={currentUser?.profilePic}
                           alt='User'
                         />
                       ) : (

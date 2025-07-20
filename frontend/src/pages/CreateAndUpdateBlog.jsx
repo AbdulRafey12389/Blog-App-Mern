@@ -10,6 +10,7 @@ import PageTitle from '@/components/PageTitle';
 import { toast } from 'sonner';
 import { createBlog, updateBlog } from '@/api/blog';
 import { useNavigate, useRevalidator, useLocation } from 'react-router-dom';
+import { isTokenValid } from '@/utils/checkToken';
 
 export default function CreateAndUpdateBlog() {
   const [isPublic, setIsPublic] = useState(true);
@@ -23,6 +24,10 @@ export default function CreateAndUpdateBlog() {
   const { revalidate } = useRevalidator();
   const { state, pathname } = useLocation();
   const isEditPage = pathname.startsWith('/edit');
+
+  if (!isTokenValid()) {
+    navigate('/');
+  }
 
   useEffect(() => {
     if (isEditPage && state?.blog) {
@@ -41,8 +46,6 @@ export default function CreateAndUpdateBlog() {
       setPreviewURL(null);
     }
   }, [state, pathname, isEditPage]);
-
-  console.log(state);
 
   const handleOnClick = () => {
     if (refInputImage.current) {

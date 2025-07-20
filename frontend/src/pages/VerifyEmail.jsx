@@ -10,17 +10,23 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import PageTitle from '@/components/PageTitle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { verifyEmailRequest } from '@/api/auth';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-
+import { isTokenValid } from '@/utils/checkToken';
 
 export default function VerifyEmail() {
   const [otp, setOtp] = useState('');
   const navigate = useNavigate();
   const [completed, setCompleted] = useState(true);
+
+  useEffect(() => {
+    if (isTokenValid()) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleOnComplete = async () => {
     setCompleted(false);

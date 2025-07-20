@@ -27,24 +27,65 @@ import {
   MoreVertical,
   Edit,
   Trash2,
+  LoaderCircle,
 } from 'lucide-react';
 
 // CUSTOM COMPONENTS...
 // import { BlogCard } from '@/components/BLogCard';
 import PageTitle from '@/components/PageTitle';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getBlogsByAuthor, getPrivateBlogs, getPublicBlogs } from '@/api/blog';
+import { BlogCard } from '@/components/BLogCard';
+import { isTokenValid } from '@/utils/checkToken';
 
 export default function Dashboard() {
-  // const stats = [
-  //   { label: 'Total Posts', value: 12 },
-  //   { label: 'Whitelisted', value: 5 },
-  //   { label: 'Liked Posts', value: 8 },
-  //   { label: 'Private Posts', value: 3 },
-  // ];
+  const [selectedValue, setIsSelectedValue] = useState('all');
+  const [isCurrentBlogs, setIsCurrentBlogs] = useState(null);
+  const [isLoading, setIsloading] = useState(false);
+  const navigate = useNavigate();
+
+  if (!isTokenValid()) {
+    navigate('/');
+  }
+
+  const userStats = useLoaderData();
+
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    (async () => {
+      try {
+        if (selectedValue === 'all') {
+          setIsloading(true);
+          const res = await getBlogsByAuthor(currentUser?.id);
+          setIsCurrentBlogs(res);
+          setIsloading(false);
+        } else if (selectedValue === 'public') {
+          setIsloading(true);
+          const res = await getPublicBlogs();
+          const myPublicBlogs = res.filter(
+            (blog) => blog?.author?._id === currentUser?.id,
+          );
+          setIsCurrentBlogs(myPublicBlogs);
+          setIsloading(false);
+        } else {
+          setIsloading(true);
+          const res = await getPrivateBlogs();
+          setIsCurrentBlogs(res);
+          setIsloading(false);
+        }
+      } catch (error) {
+        console.log(error);
+        setIsCurrentBlogs(null);
+        setIsloading(false);
+      }
+    })();
+  }, [selectedValue]);
 
   return (
     <>
       <PageTitle title='Dashboard | Manage your data' />
-      <div className='p-6 bg-background text-foreground mt-12'>
+      <div className='p-6 bg-background text-foreground mt-12 mb-12'>
         {/* Header */}
         <div className='mb-6 flex md:flex-row flex-col items-center justify-between rounded-md border-b border-border px-6 py-4'>
           <h1 className='text-3xl font-bold text-primary'>Dashboard</h1>
@@ -61,9 +102,9 @@ export default function Dashboard() {
               <BarChart className='w-8 h-8 text-primary' />
               <div>
                 <p className='text-lg font-semibold text-muted-foreground'>
-                  Total Posts
+                  Total Blogs
                 </p>
-                <p className='text-xl font-bold '>18</p>
+                <p className='text-xl font-bold '>{userStats?.totalPosts}</p>
               </div>
             </CardContent>
           </Card>
@@ -72,9 +113,9 @@ export default function Dashboard() {
               <BookmarkCheck className='w-8 h-8 text-primary' />
               <div>
                 <p className='text-lg font-semibold text-muted-foreground'>
-                  Readlist
+                  BookMarks
                 </p>
-                <p className='text-xl font-bold'>10</p>
+                <p className='text-xl font-bold'>{userStats?.totalBookmarks}</p>
               </div>
             </CardContent>
           </Card>
@@ -85,7 +126,7 @@ export default function Dashboard() {
                 <p className='text-lg font-semibold text-muted-foreground'>
                   Likes
                 </p>
-                <p className='text-xl font-bold'>52</p>
+                <p className='text-xl font-bold'>{userStats?.totalLikes}</p>
               </div>
             </CardContent>
           </Card>
@@ -96,7 +137,9 @@ export default function Dashboard() {
                 <p className='text-lg font-semibold text-muted-foreground'>
                   Private Posts
                 </p>
-                <p className='text-xl font-bold'>5</p>
+                <p className='text-xl font-bold'>
+                  {userStats?.totalPrivatePosts}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -110,7 +153,10 @@ export default function Dashboard() {
           >
             Filter your blogs:
           </Label>
-          <Select>
+          <Select
+            value={selectedValue}
+            onValueChange={setIsSelectedValue}
+          >
             <SelectTrigger className='w-[180px]'>
               <SelectValue placeholder='Select type' />
             </SelectTrigger>
@@ -124,15 +170,39 @@ export default function Dashboard() {
 
         {/* Blog Cards */}
         <div className='w-full grid gap-6 px-4 grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))]'>
-          {/* <BlogCard
-            title='JET LI'
-            subtitle='LEAGUE OF GODS'
-            author='Emily'
-            date='May 26, 25'
-            readTime='2 min read'
-            reactions={2}
-            bookmarks={2}
-          /> */}
+          {isCurrentBlogs?.length === 0 ? (
+            <p className='text-center font-bold'>
+              You have created blogs yets...
+            </p>
+          ) : isLoading ? (
+            <LoaderCircle className='h-28 w-28 text-primary text-center animate-spin mx-auto' />
+          ) : (
+            isCurrentBlogs?.map(
+              ({
+                title,
+                _id,
+                createdAt,
+                author,
+                content,
+                likes,
+                likesCount,
+              }) => (
+                <BlogCard
+                  key={_id}
+                  title={title}
+                  blogId={_id}
+                  author={author?.name}
+                  bookmarks={author.bookmarks}
+                  profilePic={author?.profilePic}
+                  createdAt={createdAt}
+                  content={content}
+                  likes={likes}
+                  reactions={likesCount}
+                />
+              ),
+            )
+          )}
+
           {/* <BlogCard
             title='JET LI'
             subtitle='LEAGUE OF GODS'

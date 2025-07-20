@@ -1,5 +1,11 @@
 // NODE MODULES
-import { Form, Link, useActionData, useNavigation } from 'react-router-dom';
+import {
+  Form,
+  Link,
+  useActionData,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
 
 // SHADCN UI IMPORTS
 import {
@@ -25,12 +31,20 @@ import PageTitle from '@/components/PageTitle';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { LoaderCircle } from 'lucide-react';
+import { isTokenValid } from '@/utils/checkToken';
 
 export default function SignIn() {
   const actionData = useActionData();
   const [role, setRole] = useState('');
   const navigation = useNavigation();
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+    useEffect(() => {
+      if (isTokenValid()) {
+        navigate('/');
+      }
+    }, [navigate]);
 
   useEffect(() => {
     if (actionData) {

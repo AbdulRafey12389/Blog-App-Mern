@@ -3,6 +3,7 @@ import { deleteBlog, likesBlogs } from '@/api/blog';
 import { bookMarksBlogs, getUserById } from '@/api/user';
 import { BlogCard } from '@/components/BLogCard';
 import DeleteBlogDialog from '@/components/DeleteBlogDialog';
+import LoginRequiredDialog from '@/components/LoginRequiredDialog';
 import PageTitle from '@/components/PageTitle';
 
 // SHADCN UI
@@ -19,8 +20,10 @@ import {
 } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import { isTokenValid } from '../utils/checkToken';
+
 export default function BlogDetail() {
-  const { blog, authorBlogs } = useLoaderData();
+  const { blog, authorBlogs } = useLoaderData() || {};
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
   const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
@@ -28,9 +31,12 @@ export default function BlogDetail() {
   const [isLikedLoading, setIsLikedLoading] = useState(false);
   const [isbookMarkLoading, setIsbookMarkLoading] = useState(false);
   const [isBookMarked, setIsBookMarked] = useState(null);
+  const [open, setOpen] = useState(false);
 
+  const authorFillterBlogs = authorBlogs?.filter(
+    (authorBlog) => authorBlog._id !== blog._id,
+  );
   const isLiked = blog?.likes?.includes(currentUser?.id);
-  // const isBookMark = blog?.likes?.includes(currentUser?.id);
   const isOwner = currentUser?.id === blog?.author;
 
   const [selectedBlog, setSelectedBlog] = useState(null);
@@ -52,6 +58,10 @@ export default function BlogDetail() {
   };
 
   const handleLikes = async () => {
+    if (!isTokenValid()) {
+      setOpen(true);
+      return;
+    }
     try {
       setIsLikedLoading(true);
       const res = await likesBlogs(blog._id);
@@ -60,7 +70,7 @@ export default function BlogDetail() {
       toast.success(res.message);
     } catch (error) {
       setIsLikedLoading(false);
-      toast.error(error.message);
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
@@ -70,27 +80,35 @@ export default function BlogDetail() {
       const res = await getUserById(currentUser?.id);
       let isBookMarked = res.bookmarks.includes(blog._id);
       setIsBookMarked(isBookMarked);
-      console.log(isBookMarked);
     })();
   }, [currentUser, blog._id]);
 
   const handleBookMarks = async () => {
+    if (!isTokenValid()) {
+      console.log('likes not allow');
+
+      setOpen(true);
+      return;
+    }
     try {
       setIsbookMarkLoading(true);
       const res = await bookMarksBlogs(blog._id);
-
       revalidate();
       setIsbookMarkLoading(false);
       toast.success(res.message);
     } catch (error) {
       setIsbookMarkLoading(false);
-      toast.error(error.message);
+      toast.error(error.response.data.message);
       console.error(error);
     }
   };
 
   return (
     <>
+      <LoginRequiredDialog
+        open={open}
+        setOpen={setOpen}
+      />
       <PageTitle title='Blogs | Explore the blogs ' />
       <div className='mx-auto p-6 mb-10 mt-12'>
         {/* Header with author info */}
@@ -202,8 +220,8 @@ export default function BlogDetail() {
             Reading next
           </h2>
           <div className='w-full grid gap-6 px-4 grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))]'>
-            {authorBlogs &&
-              authorBlogs.map(
+            {authorFillterBlogs &&
+              authorFillterBlogs?.map(
                 ({
                   title,
                   content,

@@ -26,6 +26,7 @@ import getBlogByIdLoaderFunction from './blogLoader/getBlogById';
 import getAllPbulicBlogLoaderFunction from './blogLoader/getAllPublicBlogsLoader';
 import getBookMarksLoaderFunction from './userLoader/getBookMarksLoader';
 import getUserStatsLoaderFunction from './userLoader/getUserStatsLoader';
+import NotFound from '@/pages/NotFondPage';
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
         element: <BookMarks />,
         loader: getBookMarksLoaderFunction,
       },
+      {
+        path: '/*',
+        element: <NotFound />,
+      },
     ],
   },
   {
@@ -86,6 +91,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Admin />,
+  },
+  {
+    path: '/*',
+    element: <NotFound />,
   },
 ]);
 

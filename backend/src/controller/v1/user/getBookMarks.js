@@ -6,8 +6,6 @@ const getBookmarks = async (req, res) => {
   try {
     const userId = req.user.id; // From auth middleware
 
-    console.log(userId);
-
     const user = await User.findById(userId).populate({
       path: 'bookmarks',
       select: 'title coverImage likes likesCount author createdAt content', // include only needed fields

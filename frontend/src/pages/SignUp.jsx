@@ -1,5 +1,11 @@
 // NODE MODULES
-import { Form, Link, useActionData, useNavigation } from 'react-router-dom';
+import {
+  Form,
+  Link,
+  useActionData,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 // SHADCN UI IMPORTS
@@ -27,11 +33,19 @@ import { LoaderCircle } from 'lucide-react';
 
 // TOSTER TO USE...
 import { toast } from 'sonner';
+import { isTokenValid } from '@/utils/checkToken';
 
 export default function SignUp() {
   const actionData = useActionData();
   const navigation = useNavigation();
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isTokenValid()) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (actionData) {

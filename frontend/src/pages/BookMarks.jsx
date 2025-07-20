@@ -1,11 +1,22 @@
 // src/pages/BookmarkPage.jsx
 
 import { BlogCard } from '@/components/BLogCard';
-import { useLoaderData } from 'react-router-dom';
+import { isTokenValid } from '@/utils/checkToken';
+import { useEffect } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 // import BlogCard from '@/components/BlogCard'; // or whatever you use for blog display
 
 const BookMarks = () => {
-  const { bookmarks } = useLoaderData();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isTokenValid()) {
+      navigate('/');
+      return;
+    }
+  }, [navigate]);
+
+  const { bookmarks } = useLoaderData() || {};
 
   return (
     <div className='p-6 space-y-4 mt-12 mb-14'>
