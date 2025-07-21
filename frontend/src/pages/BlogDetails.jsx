@@ -34,7 +34,8 @@ export default function BlogDetail() {
   const [open, setOpen] = useState(false);
 
   const authorFillterBlogs = authorBlogs?.filter(
-    (authorBlog) => authorBlog._id !== blog._id,
+    (authorBlog) =>
+      authorBlog._id !== blog._id && authorBlog?.isPublic === true,
   );
   const isLiked = blog?.likes?.includes(currentUser?.id);
   const isOwner = currentUser?.id === blog?.author;
