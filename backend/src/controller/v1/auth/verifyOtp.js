@@ -5,8 +5,6 @@ import Otp from '../../../models/otp.model.js';
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
-  console.log(email, otp);
-
   try {
     const otpRecord = await Otp.findOne({ email, otp });
     if (!otpRecord) {

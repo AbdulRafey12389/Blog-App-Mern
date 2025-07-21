@@ -2,8 +2,6 @@
 import axios from './axios';
 
 export async function registerUser(formData) {
-  console.log(formData);
-
   try {
     const response = await axios.post('auth/signup', formData);
     return response.data;
