@@ -85,8 +85,6 @@ export default function BlogDetail() {
 
   const handleBookMarks = async () => {
     if (!isTokenValid()) {
-      console.log('likes not allow');
-
       setOpen(true);
       return;
     }
