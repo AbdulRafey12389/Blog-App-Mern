@@ -5,6 +5,8 @@ import Otp from '../../../models/otp.model.js';
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
+  console.log(email, otp);
+
   try {
     const otpRecord = await Otp.findOne({ email, otp });
     if (!otpRecord) {
@@ -42,7 +44,7 @@ const verifyOtp = async (req, res) => {
         id: user._id,
         name: user.name,
         username: user.username,
-        bio: username.bio,
+        bio: user.bio,
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,

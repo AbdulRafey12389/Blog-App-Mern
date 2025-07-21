@@ -20,6 +20,7 @@ const signUpAction = async function ({ request }) {
 
   try {
     const response = await registerUser(data);
+
     if (response.success == false) {
       return response.message;
     } else {

@@ -80,7 +80,6 @@ export default function VerifyEmail() {
               value={otp}
               onChange={(value) => {
                 setOtp(value);
-                console.log('Current OTP:', value);
               }}
               onComplete={handleOnComplete}
             >
