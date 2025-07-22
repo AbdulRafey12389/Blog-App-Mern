@@ -44,6 +44,7 @@ export default function Dashboard() {
   const [isCurrentBlogs, setIsCurrentBlogs] = useState(null);
   const [isLoading, setIsloading] = useState(false);
   const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   if (!isTokenValid()) {
     navigate('/');
@@ -91,7 +92,9 @@ export default function Dashboard() {
           <h1 className='text-3xl font-bold text-primary'>Dashboard</h1>
           <p className='text-muted-foreground font-bold mr-2 text-2xl'>
             Welcome back,{' '}
-            <span className='font-semibold text-foreground'>Abdul Rafey</span>
+            <span className='font-semibold text-foreground'>
+              {currentUser?.name}
+            </span>
           </p>
         </div>
 
