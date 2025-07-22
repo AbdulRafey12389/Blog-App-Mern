@@ -15,7 +15,7 @@ export default function Setting() {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
-  const [allowImageClick, setAllowImageClick] = useState(true);
+  const [allowImageClick, setAllowImageClick] = useState(false);
   const [isloading, setIsloading] = useState(false);
   const [isloading2, setIsloading2] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -29,7 +29,6 @@ export default function Setting() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  console.log(!isTokenValid());
 
   const handleOnClick = () => {
     if (allowImageClick) return;
